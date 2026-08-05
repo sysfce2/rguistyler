@@ -15,6 +15,7 @@
 *
 *   POSSIBLE IMPROVEMENTS:
 *       - Support APNG chunks, added to PNG specs recently (draft)
+*       - Support XMP chunks for extended metadata, useful for C2PA metadata
 *
 *   CONFIGURATION:
 *       #define RPNG_IMPLEMENTATION
@@ -95,16 +96,16 @@
 *                         ADDED: rpng_save_image_indexed() (+ memory version)
 *                         ADDED: Automatic join of IDAT chunks when requested
 *                         REVIEWED: Crashes on images loading not found
-* 
+*
 *       1.1 (29-May-2023) UPDATED: sdefl and sinfl, fixed issue
-* 
+*
 *       1.0 (24-Dec-2021) ADDED: rpng_load_image()
 *                         ADDED: RPNG_LOG() macro
 *                         REVIEWED: rpng_save_image() filter process issues
 *                         RENAMED: rpng_create_image() to rpng_save_image()
 *                         UPDATED: sdefl to latest version 1.0
 *                         ADDED: sinfl library (internal copy) for data decompression
-* 
+*
 *       0.9 (10-Jun-2020) First completely functional version of the library
 *
 *
@@ -798,7 +799,7 @@ void rpng_chunk_write(const char *filename, rpng_chunk chunk)
 
     int file_output_size = 0;
     char *file_output = NULL;
-    
+
     if (file_data != NULL)
     {
         file_output = rpng_chunk_write_from_memory(file_data, chunk, &file_output_size);
@@ -1319,7 +1320,7 @@ char *rpng_load_image_indexed_from_memory(const char *buffer, int *width, int *h
 
         RPNG_FREE(chunk_palette.data);
 
-        // Try loading palette alpha data, if provided 
+        // Try loading palette alpha data, if provided
         rpng_chunk chunk_alpha = rpng_chunk_read_from_memory(buffer, "tRNS");
 
         if ((chunk_alpha.data != NULL) && (chunk_alpha.length == palette->color_count))
@@ -2163,7 +2164,7 @@ static char *rpng_inflate_image_data(char *image_data, int image_data_size, int 
         image_data_unfiltered = (char *)RPNG_CALLOC(image_data_decomp_size, 1);  // Actually data unfiltered size should be smaller
 
         int current_filter = 0;
-        int out = 0, x = 0, a = 0, b = 0, c = 0;
+        unsigned char out = 0, x = 0, a = 0, b = 0, c = 0;
 
         // Reverse scanlines filters
         for (int y = 0; y < height; y++)   // Move scanline by scanline, we must discard first byte = current_filter
@@ -2176,10 +2177,10 @@ static char *rpng_inflate_image_data(char *image_data, int image_data_size, int 
                 // a = left pixel byte (from current)
                 // b = above pixel byte (from current)
                 // c = left pixel byte (from b)
-                x = (int)(image_data_filtered[(1 + scanline_size)*y + 1 + p]);
-                a = (p >= pixel_size) ? (int)(image_data_unfiltered[scanline_size*y + p - pixel_size]) : 0;
-                b = (y > 0) ? (int)(image_data_unfiltered[scanline_size*(y - 1) + p]) : 0;
-                c = (y > 0) ? ((p >= pixel_size) ? (int)(image_data_unfiltered[scanline_size*(y - 1) + p - pixel_size]) : 0) : 0;
+                x = (image_data_filtered[(1 + scanline_size)*y + 1 + p]);
+                a = (p >= pixel_size)? (image_data_unfiltered[scanline_size*y + p - pixel_size]) : 0;
+                b = (y > 0)? (image_data_unfiltered[scanline_size*(y - 1) + p]) : 0;
+                c = (y > 0)? ((p >= pixel_size)? (image_data_unfiltered[scanline_size*(y - 1) + p - pixel_size]) : 0) : 0;
 
                 switch (current_filter)
                 {
@@ -2192,7 +2193,7 @@ static char *rpng_inflate_image_data(char *image_data, int image_data_size, int 
                 }
 
                 // Register scanline unfiltered values, byte by byte
-                image_data_unfiltered[y*scanline_size + p] = (char)out;
+                image_data_unfiltered[y*scanline_size + p] = out;
             }
         }
 
