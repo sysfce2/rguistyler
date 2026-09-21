@@ -2417,8 +2417,7 @@ static char *SaveStyleToMemory(int *size)
         // WARNING: Should RGBA font data be supported?
         if (imFont.format != PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA)
         {
-            // TODO: For further optimization, GRAYSCALE format can be used,
-            // to be decomposed into 2 channels on loading
+            // TODO: For further optimization, GRAYSCALE format can be used, decomposed into 2 channels on loading
             ImageFormat(&imFont, PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA);
         }
 
@@ -2744,7 +2743,6 @@ static void ExportStyleAsCode(const char *fileName, const char *styleName)
         strcpy(styleNameLower, TextToLower(styleName));
 
         // Export only properties that change from default style
-        // TODO: WARNING: This count is wrong!
         fprintf(txtFile, "#define %s_STYLE_PROPS_COUNT  %i\n\n", TextToUpper(styleName), CountStyleChangesDefault());
 
         // Write byte data as hexadecimal text
