@@ -39,7 +39,7 @@ typedef struct TextureView {
 
 typedef struct {
     Rectangle bounds;
-    
+
     bool windowActive;
 
     bool btnLoadFontPressed;
@@ -144,7 +144,7 @@ GuiWindowFontAtlasState InitGuiWindowFontAtlas(void)
     GuiWindowFontAtlasState state = { 0 };
 
     state.bounds = (Rectangle){ 748 + 160, 52, 724, 776 - 256 };
-    
+
     state.windowActive = true;
 
     state.btnLoadFontPressed = false;
@@ -179,11 +179,11 @@ GuiWindowFontAtlasState InitGuiWindowFontAtlas(void)
     fontAtlasView.position.y = state.bounds.y + state.bounds.height/2 - fontAtlasView.texture.height*fontAtlasView.scale/2;
     fontAtlasView.prevPosition = fontAtlasView.position;
 
-    fontAtlasRec = (Rectangle){ 
-        fontAtlasView.position.x, 
+    fontAtlasRec = (Rectangle){
+        fontAtlasView.position.x,
         fontAtlasView.position.y,
-        fontAtlasView.texture.width*fontAtlasView.scale, 
-        fontAtlasView.texture.height*fontAtlasView.scale 
+        fontAtlasView.texture.width*fontAtlasView.scale,
+        fontAtlasView.texture.height*fontAtlasView.scale
     };
 
     return state;
@@ -314,7 +314,7 @@ void GuiWindowFontAtlas(GuiWindowFontAtlasState *state)
                 fontAtlasView.position.y = state->bounds.y + state->bounds.height/2 - fontAtlasView.texture.height*fontAtlasView.scale/2;
                 fontAtlasView.prevPosition = fontAtlasView.position;
 
-                prevSelectWhiteRecActive = false; 
+                prevSelectWhiteRecActive = false;
                 state->selectWhiteRecActive = false;
 
                 prevFontGenSizeValue = state->fontGenSizeValue;
@@ -340,11 +340,11 @@ void GuiWindowFontAtlas(GuiWindowFontAtlasState *state)
         }
 
         // Calculate font atlas rectangle (considering transformations)
-        fontAtlasRec = (Rectangle){ 
-            fontAtlasView.position.x, 
+        fontAtlasRec = (Rectangle){
+            fontAtlasView.position.x,
             fontAtlasView.position.y,
-            fontAtlasView.texture.width*fontAtlasView.scale, 
-            fontAtlasView.texture.height*fontAtlasView.scale 
+            fontAtlasView.texture.width*fontAtlasView.scale,
+            fontAtlasView.texture.height*fontAtlasView.scale
         };
 
         // Reload font and generate new atlas at new size when required
@@ -362,7 +362,7 @@ void GuiWindowFontAtlas(GuiWindowFontAtlasState *state)
                     GuiSetFont(customFont);
                     fontAtlasView.texture = customFont.texture;
 
-                    // NOTE: Generated fonts have a white rectangle at the bottom-right corner by default, 
+                    // NOTE: Generated fonts have a white rectangle at the bottom-right corner by default,
                     // 3x3 pixels, to be used for shapes rectangle
                     state->fontWhiteRec = (Rectangle){ (float)customFont.texture.width - 2, (float)customFont.texture.height - 2, 1, 1 };
 
@@ -377,12 +377,12 @@ void GuiWindowFontAtlas(GuiWindowFontAtlasState *state)
                 customFont = GetFontDefault();
                 GuiSetFont(customFont);
                 fontAtlasView.texture = customFont.texture;
-                
+
                 Rectangle whiteRec = customFont.recs[95];
                 state->fontWhiteRec = (Rectangle){ whiteRec.x + 2, whiteRec.y + 2, 1, 1 };
 
                 GuiSetStyle(DEFAULT, TEXT_SPACING, 1);
-                
+
                 customFontLoaded = false;
             }
 
@@ -395,7 +395,7 @@ void GuiWindowFontAtlas(GuiWindowFontAtlasState *state)
             fontAtlasView.position.y = state->bounds.y + state->bounds.height/2 - fontAtlasView.texture.height*fontAtlasView.scale/2;
             fontAtlasView.prevPosition = fontAtlasView.position;
 
-            prevSelectWhiteRecActive = false; 
+            prevSelectWhiteRecActive = false;
             state->selectWhiteRecActive = false;
             prevFontGenSizeValue = state->fontGenSizeValue;
 
@@ -419,8 +419,8 @@ void GuiWindowFontAtlas(GuiWindowFontAtlasState *state)
         // Draw font atlas view
         BeginScissorMode(state->bounds.x + 1, state->bounds.y + 24 + 40, state->bounds.width - 2, state->bounds.height - 65 - 68 - 18);
             DrawRectangleRec(fontAtlasRec, BLACK);
-            DrawTexturePro(fontAtlasView.texture, 
-                (Rectangle){ 0, 0, (float)fontAtlasView.texture.width, (float)fontAtlasView.texture.height }, 
+            DrawTexturePro(fontAtlasView.texture,
+                (Rectangle){ 0, 0, (float)fontAtlasView.texture.width, (float)fontAtlasView.texture.height },
                 fontAtlasRec, (Vector2){ 0.0f, 0.0f }, 0.0f, WHITE);
             DrawRectangleLinesEx(fontAtlasRec, 1.0f, Fade(RED, 0.6f));
 
@@ -429,25 +429,25 @@ void GuiWindowFontAtlas(GuiWindowFontAtlasState *state)
                 DrawRectangleLinesEx(fontWhiteRecScreen, 1.0f, RED);
 
                 // Draw values for convenience
-                DrawTextEx(GuiGetFont(), TextFormat("[%i, %i]", (int)state->fontWhiteRec.x, (int)state->fontWhiteRec.y), 
-                    (Vector2){ fontWhiteRecScreen.x - 20, fontWhiteRecScreen.y - 20 }, GuiGetStyle(DEFAULT, TEXT_SIZE), 
+                DrawTextEx(GuiGetFont(), TextFormat("[%i, %i]", (int)state->fontWhiteRec.x, (int)state->fontWhiteRec.y),
+                    (Vector2){ fontWhiteRecScreen.x - 20, fontWhiteRecScreen.y - 20 }, GuiGetStyle(DEFAULT, TEXT_SIZE),
                     GuiGetStyle(DEFAULT, TEXT_SPACING), GetColor(GuiGetStyle(DEFAULT, BORDER_COLOR_FOCUSED)));
                 DrawTextEx(GuiGetFont(), TextFormat("[%i, %i]", (int)state->fontWhiteRec.width, (int)state->fontWhiteRec.height),
-                    (Vector2){ fontWhiteRecScreen.x + fontWhiteRecScreen.width - 20, fontWhiteRecScreen.y + fontWhiteRecScreen.height + 20 }, 
+                    (Vector2){ fontWhiteRecScreen.x + fontWhiteRecScreen.width - 20, fontWhiteRecScreen.y + fontWhiteRecScreen.height + 20 },
                     GuiGetStyle(DEFAULT, TEXT_SIZE), GuiGetStyle(DEFAULT, TEXT_SPACING), GetColor(GuiGetStyle(DEFAULT, BORDER_COLOR_FOCUSED)));
             }
             else
             {
-                DrawRectangleRec((Rectangle){ 
-                    fontAtlasRec.x + state->fontWhiteRec.x*fontAtlasView.scale, 
+                DrawRectangleRec((Rectangle){
+                    fontAtlasRec.x + state->fontWhiteRec.x*fontAtlasView.scale,
                     fontAtlasRec.y + state->fontWhiteRec.y*fontAtlasView.scale,
-                    state->fontWhiteRec.width*fontAtlasView.scale, state->fontWhiteRec.height*fontAtlasView.scale }, 
+                    state->fontWhiteRec.width*fontAtlasView.scale, state->fontWhiteRec.height*fontAtlasView.scale },
                     GetColor(GuiGetStyle(DEFAULT, BORDER_COLOR_FOCUSED)));
             }
         EndScissorMode();
 
         GuiLine((Rectangle){ state->bounds.x + 0, state->bounds.y + 24 + 40 - 2, state->bounds.width, 2 }, NULL);
-        
+
         GuiEnableTooltip();
         GuiSetTooltip("Load font file");
         state->btnLoadFontPressed = GuiButton((Rectangle){ state->bounds.x + 12, state->bounds.y + 32, 24, 24 }, "#30#");
@@ -519,7 +519,7 @@ void GuiWindowFontAtlas(GuiWindowFontAtlasState *state)
         fontAtlasView.position.y = state->bounds.y + state->bounds.height/2 - fontAtlasView.texture.height*fontAtlasView.scale/2;
         fontAtlasView.prevPosition = fontAtlasView.position;
 
-        prevSelectWhiteRecActive = false; 
+        prevSelectWhiteRecActive = false;
         state->selectWhiteRecActive = false;
 
         prevFontGenSizeValue = state->fontGenSizeValue;
